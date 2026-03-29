@@ -33,6 +33,14 @@ class TimeDeltaTuple (NamedTuple):
   def __abs__ (self):
     return type(self).new(abs(self.astimedelta()))
 
+  def __eq__ (self, value, /):
+    if self is value:
+      return True
+    if isinstance(value, TimeDeltaTuple):
+      return self.astimedelta().__eq__(value.astimedelta())
+    if isinstance(value, timedelta):
+      return self.astimedelta().__eq__(value)
+
   @classmethod
   def new (cls, obj, /):
     if isinstance(obj, timedelta):
