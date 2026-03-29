@@ -26,5 +26,19 @@ class TimeDeltaTuple (NamedTuple):
   @property
   def microseconds (self):
     return self.us
+
   def astimedelta (self):
     return timedelta(self.dd, self.ss, self.us, self.ms, self.mm, self.hh)
+
+  def __abs__ (self):
+    return type(self).new(abs(self.astimedelta()))
+
+  @classmethod
+  def new (cls, obj, /):
+    if isinstance(obj, timedelta):
+      ms, us = divmod(obj.microseconds, 1_000)
+      mm, ss = divmod(obj.seconds, 60)
+      hh, mm = divmod(mm, 60)
+      dd = obj.days
+      return TimeDeltaTuple(dd, hh, mm, ss, ms, us)
+    raise TypeError(f"invalid type for value {obj!r} - expected timedelta")
