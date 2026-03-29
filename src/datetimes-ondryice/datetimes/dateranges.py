@@ -35,3 +35,16 @@ class daterange (Sequence[date]):
   @property
   def step (self):
     return self._r.step
+
+  def __len__ (self):
+    return self._r.__len__()
+  def __iter__ (self):
+    return map(date.fromordinal, self._r)
+  def __getitem__ (self, key, /):
+    if isinstance(key, slice):
+      cp = object.__new__(type(self))
+      cp._r = self._r.__getitem__(key)
+      return cp
+    o = self._r.__getitem__(key)
+    assert isinstance(o, int)
+    return date.fromordinal(o)
