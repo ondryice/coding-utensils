@@ -1,3 +1,4 @@
+from datetime import timedelta
 from typing import NamedTuple
 
 class TimeDeltaTuple (NamedTuple):
@@ -25,3 +26,5 @@ class TimeDeltaTuple (NamedTuple):
   @property
   def microseconds (self):
     return self.us
+  def astimedelta (self):
+    return timedelta(self.dd, self.ss, self.us, self.ms, self.mm, self.hh)
