@@ -7,3 +7,21 @@ class TimeDeltaTuple (NamedTuple):
   ss: int = 0
   ms: int = 0
   us: int = 0
+  @property
+  def days (self):
+    return self.dd
+  @property
+  def hours (self):
+    return self.hh
+  @property
+  def minutes (self):
+    return self.mm
+  @property
+  def seconds (self):
+    return self.ss
+  @property
+  def milliseconds (self):
+    return self.ms
+  @property
+  def microseconds (self):
+    return self.us
