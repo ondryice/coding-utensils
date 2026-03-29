@@ -1,3 +1,5 @@
+"""This a module for some simple utility classes, functions, and constants concerning date/time objects and operations."""
+
 from datetime import date, datetime, time, timedelta, timezone, UTC
 
 from datetimes.dateranges import daterange

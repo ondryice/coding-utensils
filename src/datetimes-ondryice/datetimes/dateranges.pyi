@@ -1,3 +1,5 @@
+"""Module containing the `daterange` class."""
+
 from datetime import date
 from typing import Iterator, Literal, NoReturn, Sequence, SupportsIndex, final, overload
 

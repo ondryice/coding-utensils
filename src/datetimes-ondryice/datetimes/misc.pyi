@@ -1,3 +1,5 @@
+"""Basic module for constants & functions involving date/time objects and operations."""
+
 from datetime import date, datetime, timezone, UTC
 
 UTC

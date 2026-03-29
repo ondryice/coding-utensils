@@ -1,7 +1,10 @@
+"""Module for the `TimeDeltaTuple` class."""
+
 from datetime import timedelta
 from typing import Literal, NamedTuple, overload
 
 class TimeDeltaTuple (NamedTuple):
+  """Class for representing timedeltas as sums of distinct measures."""
   dd: int = 0
   hh: int = 0
   mm: int = 0
