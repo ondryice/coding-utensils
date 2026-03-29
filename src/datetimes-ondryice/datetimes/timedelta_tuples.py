@@ -27,6 +27,18 @@ class TimeDeltaTuple (NamedTuple):
   def microseconds (self):
     return self.us
 
+  def asdays (self):
+    return self.astimedelta().total_seconds() / 86_400
+  def ashours (self):
+    return self.astimedelta().total_seconds() / 3_600
+  def asminutes (self):
+    return self.astimedelta().total_seconds() / 60
+  def asseconds (self):
+    return round(self.astimedelta().total_seconds(), 6)
+  def asmilliseconds (self):
+    return round(self.astimedelta().total_seconds() * 1_000, 3)
+  def asmicroseconds (self):
+    return round(self.astimedelta().total_seconds() * 1_000_000)
   def astimedelta (self):
     return timedelta(self.dd, self.ss, self.us, self.ms, self.mm, self.hh)
 
