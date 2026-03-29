@@ -25,3 +25,13 @@ class daterange (Sequence[date]):
     if start is None or stop is None:
       raise TypeError(f"invalid types provided {args} - {USAGE}")
     self._r = range(start, stop, step)
+
+  @property
+  def start (self):
+    return date.fromordinal(self._r.start)
+  @property
+  def stop (self):
+    return date.fromordinal(self._r.stop)
+  @property
+  def step (self):
+    return self._r.step
