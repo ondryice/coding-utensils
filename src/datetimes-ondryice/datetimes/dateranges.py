@@ -35,6 +35,19 @@ class daterange (Sequence[date]):
   @property
   def step (self):
     return self._r.step
+  
+  def count (self, value, /):
+    if isinstance(value, date):
+      return self._r.count(value.toordinal())
+    if isinstance(value, str):
+      return self._r.index(date.fromisoformat(value).toordinal())
+    return 0
+  def index (self, value, /):
+    if isinstance(value, date):
+      return self._r.index(value.toordinal())
+    if isinstance(value, str):
+      return self._r.index(date.fromisoformat(value).toordinal())
+    raise ValueError(f"failed to index value {value!r} - not in sequence")
 
   def __len__ (self):
     return self._r.__len__()
