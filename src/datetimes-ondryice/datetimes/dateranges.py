@@ -48,3 +48,15 @@ class daterange (Sequence[date]):
     o = self._r.__getitem__(key)
     assert isinstance(o, int)
     return date.fromordinal(o)
+  
+  def __repr__ (self):
+    return f"{type(self).__name__}{(str(self.start), len(self), self.step)[:2+(self.step!=1)]}"
+  def __hash__ (self):
+    return hash(('daterange',self._r))
+  
+  def __eq__ (self, value, /):
+    if self is value:
+      return True
+    if isinstance(value, daterange):
+      return self._r == value._r
+    return False
