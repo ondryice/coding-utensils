@@ -12,6 +12,12 @@ class daterange (Sequence[date]):
     if len(args) not in (2,3):
       raise TypeError(f"invalid number of arguments {len(args)} - expected 2 or 3; {USAGE}")
     a1, a2, step = [ *args, 1 ][:3]
+    if isinstance(a1, str):
+      a1 = date.fromisoformat(a1)
+    if isinstance(a2, str):
+      a2 = date.fromisoformat(a2)
+    if not isinstance(step, int):
+      raise TypeError(f"invalid type for step {step!r} - must be int")
     start = stop = None
     if isinstance(a1, date):
       start = a1.toordinal()
@@ -53,6 +59,8 @@ class daterange (Sequence[date]):
     return self._r.__len__()
   def __iter__ (self):
     return map(date.fromordinal, self._r)
+  def __contains__(self, value, /):
+    return bool(self.count(value))
   def __getitem__ (self, key, /):
     if isinstance(key, slice):
       cp = object.__new__(type(self))
