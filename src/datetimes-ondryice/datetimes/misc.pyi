@@ -68,3 +68,15 @@ def td_string (
     'day','hr','min','sec','milli','micro'
   ],
 /) -> str: ...
+
+@overload
+def td_tuple (timedelta: timedelta, spec: Literal['dd','hh','mm','ss','ms','us'] = 'us', /) -> TimeDeltaTuple:
+  """Simple factory method for the TimeDeltaTuple class, optionally with rounding the provided delta to the provided specificity."""
+@overload
+def td_tuple (
+  timedelta: timedelta,
+  spec: Literal['days','hours','minutes','seconds','milliseconds','microseconds',
+    'day','hour','minute','second','millisecond','microsecond',
+    'day','hr','min','sec','milli','micro'
+  ],
+/) -> TimeDeltaTuple: ...

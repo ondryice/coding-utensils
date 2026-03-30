@@ -74,3 +74,19 @@ def td_string (value, spec='auto', /):
   if delta.ss: return f"{sign}{delta.ss}.{delta.ms:03}" + (spec=='us')*f"{delta.us:03}" + 's'
   if delta.ms: return f"{sign}{delta.ms}.{delta.us:03}ms"
   return f"{sign}{delta.us}us"
+
+def td_tuple (value, spec='us', /):
+  from datetimes.timedelta_tuples import TimeDeltaTuple
+  if not isinstance(value, timedelta):
+    raise TypeError(f"invalid type for timedelta {value!r} - must be timedelta")
+  spec = str(spec).lower()
+  spec = dict(
+    microsecond='us', millisecond='ms', second='ss',
+    minute='mm', hour='hh', day='dd',
+  ).get(spec.removesuffix('s'), dict(
+    micro='us', milli='ms', sec='ss', min='mm', hr='hh',
+  ).get(spec, spec))
+  delta = TimeDeltaTuple.new(value)
+  if spec != 'us':
+    return td_rounded(delta, spec)
+  return delta
