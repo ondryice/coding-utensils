@@ -27,7 +27,7 @@ def td_rounded (value, spec: str, /):
   ).get(spec, spec))
   def result (dd=0, hh=0, mm=0, ss=0, ms=0, us=0):
     if isinstance(value, timedelta): return timedelta(dd, ss, us, ms, mm, hh)
-    return tdt(dd, hh, mm, ss, ms, us)
+    return tdt.new(timedelta(dd, ss, us, ms, mm, hh))
   match (spec):
     case 'us': return result(us=delta.asmicroseconds())
     case 'ms': return result(ms=round(delta.asmilliseconds()))
