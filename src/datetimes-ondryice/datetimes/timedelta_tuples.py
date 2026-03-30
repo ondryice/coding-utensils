@@ -42,17 +42,6 @@ class TimeDeltaTuple (NamedTuple):
   def astimedelta (self):
     return timedelta(self.dd, self.ss, self.us, self.ms, self.mm, self.hh)
 
-  def __abs__ (self):
-    return type(self).new(abs(self.astimedelta()))
-
-  def __eq__ (self, value, /):
-    if self is value:
-      return True
-    if isinstance(value, TimeDeltaTuple):
-      return self.astimedelta().__eq__(value.astimedelta())
-    if isinstance(value, timedelta):
-      return self.astimedelta().__eq__(value)
-
   @classmethod
   def new (cls, obj, /):
     if isinstance(obj, timedelta):
@@ -62,3 +51,18 @@ class TimeDeltaTuple (NamedTuple):
       dd = obj.days
       return TimeDeltaTuple(dd, hh, mm, ss, ms, us)
     raise TypeError(f"invalid type for value {obj!r} - expected timedelta")
+
+  def __str__ (self):
+    from datetimes.misc import td_string
+    return td_string(self, 'auto')
+
+  def __eq__ (self, value, /):
+    if self is value:
+      return True
+    if isinstance(value, TimeDeltaTuple):
+      return self.astimedelta().__eq__(value.astimedelta())
+    if isinstance(value, timedelta):
+      return self.astimedelta().__eq__(value)
+
+  def __abs__ (self):
+    return type(self).new(abs(self.astimedelta()))

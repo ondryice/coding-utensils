@@ -41,7 +41,7 @@ class daterange (Sequence[date]):
   @property
   def step (self):
     return self._r.step
-  
+
   def count (self, value, /):
     if isinstance(value, date):
       return self._r.count(value.toordinal())
@@ -69,12 +69,12 @@ class daterange (Sequence[date]):
     o = self._r.__getitem__(key)
     assert isinstance(o, int)
     return date.fromordinal(o)
-  
+
   def __repr__ (self):
     return f"{type(self).__name__}{(str(self.start), len(self), self.step)[:2+(self.step!=1)]}"
   def __hash__ (self):
     return hash(('daterange',self._r))
-  
+
   def __eq__ (self, value, /):
     if self is value:
       return True
