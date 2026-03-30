@@ -3,7 +3,7 @@
 from datetime import date, datetime, time, timedelta, timezone, UTC
 
 from datetimes.dateranges import daterange
-from datetimes.misc import now, today, LOCAL_TIME, PROGRAM_START
+from datetimes.misc import now, td_rounded, td_string, today, LOCAL_TIME, PROGRAM_START
 from datetimes.timedelta_tuples import TimeDeltaTuple
 
 __all__ = [
@@ -13,6 +13,8 @@ __all__ = [
 
   # functions
   'now',
+  'td_rounded',
+  'td_string',
   'today',
 
   # consts
