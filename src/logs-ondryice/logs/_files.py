@@ -50,12 +50,12 @@ class LOGFILE:
     print(*values, sep=sep, end=end, file=self.file, flush=flush)
     return self
   @contextmanager
-  def pushandlock (self, condition: bool, values, sep=' ', end='\n', flush=False):
+  def pushandlockif (self, condition: bool, values, sep=' ', end='\n', flush=False):
     if condition and not self.locked:
-      self.write(*values, sep=sep, end=end, flush=flush).lock()
-    yield
-    if condition and not self.locked:
+      yield self.write(*values, sep=sep, end=end, flush=flush).lock()
       self.unlock()
+    else:
+      yield self
 
 STDOUT = object.__new__(LOGFILE)
 STDOUT.file, STDOUT.times = None, [ PROGRAM_START ]

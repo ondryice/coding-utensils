@@ -32,8 +32,8 @@ class log:
 
   @classmethod
   def push (cls, *values, sep=' ', end='\n', flush=False):
-    with STDOUT.pushandlock(not cls.muted, values, sep, end, flush):
-      with cls.output.pushandlock(not cls.blocked, values, sep, end, flush):
+    with STDOUT.pushandlockif(not cls.muted, values, sep, end, flush):
+      with cls.output.pushandlockif(not cls.blocked, values, sep, end, flush):
         if cls.forwarding and cls.super():
           cls.super().push(*values, sep=sep, end=end, flush=flush)
     return cls
