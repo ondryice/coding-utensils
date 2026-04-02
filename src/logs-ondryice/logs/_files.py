@@ -39,6 +39,10 @@ class LOGFILE:
     self.indent -= 1
     return self
 
+  def write (self, *values, sep=' ', end='\n', flush=False):
+    print(*values, sep=sep, end=end, file=self.file, flush=flush)
+    return self
+
 STDOUT = object.__new__(LOGFILE)
 STDOUT.file, STDOUT.times = None, [ PROGRAM_START ]
 STDOUT.indent = STDOUT.blocked = 0
