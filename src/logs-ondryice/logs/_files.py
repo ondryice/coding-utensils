@@ -9,13 +9,13 @@ class LOGFILE:
   times: list[datetime]
   indent: int
   locked: int
-  def __new__ (cls, file, start=..., /):
+  def __new__ (cls, file, start, /):
     if file is None: return STDOUT
     elif isinstance(file, TextIOWrapper) and file.writable():
       if file in LOGFILE.__logfile_instances:
         return LOGFILE.__logfile_instances[file]
     else: raise ValueError(f"invalid file {file!r} - must be None for stdout or writable instance of io.TextIOWrapper")
-    start = PROGRAM_START if start is ... else _inst(start)
+    start = _inst(start)
     obj = super().__new__(LOGFILE)
     obj.file = file
     obj.times = [ start ]
