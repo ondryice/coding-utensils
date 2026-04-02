@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from datetime import datetime
 from io import TextIOWrapper
 
@@ -25,8 +26,8 @@ class LOGFILE:
   def lock (self):
     self.locked += 1
     return self
-  def unlock (self, proceed=True):
-    self.locked -= proceed and self.locked > 0
+  def unlock (self):
+    self.locked -= self.locked > 0
     return self
   def enter (self, instant=...):
     if self.locked:
@@ -48,6 +49,13 @@ class LOGFILE:
       return self
     print(*values, sep=sep, end=end, file=self.file, flush=flush)
     return self
+  @contextmanager
+  def pushandlock (self, condition: bool, values, sep=' ', end='\n', flush=False):
+    if condition and not self.locked:
+      self.write(*values, sep=sep, end=end, flush=flush).lock()
+    yield
+    if condition and not self.locked:
+      self.unlock()
 
 STDOUT = object.__new__(LOGFILE)
 STDOUT.file, STDOUT.times = None, [ PROGRAM_START ]

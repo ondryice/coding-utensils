@@ -32,16 +32,8 @@ class log:
 
   @classmethod
   def push (cls, *values, sep=' ', end='\n', flush=False):
-    if not cls.super():
-      if not cls.blocked:
-        STDOUT.write(*values, sep=sep, end=end, flush=flush)
-      return cls
-    if (std:=not cls.muted):
-      STDOUT.write(*values, sep=sep, end=end, flush=flush).lock()
-    if (file:=not cls.blocked):
-      cls.output.write(*values, sep=sep, end=end, flush=flush).lock()
-    if cls.forwarding:
-      cls.super().push(*values, sep=sep, end=end, flush=flush)
-    STDOUT.unlock(std)
-    cls.output.unlock(file)
+    with STDOUT.pushandlock(not cls.muted, values, sep, end, flush):
+      with cls.output.pushandlock(not cls.blocked, values, sep, end, flush):
+        if cls.forwarding and cls.super():
+          cls.super().push(*values, sep=sep, end=end, flush=flush)
     return cls
