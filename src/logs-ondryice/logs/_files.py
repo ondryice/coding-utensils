@@ -18,3 +18,9 @@ class LOGFILE:
     obj.times = [ start ]
     obj.indent = obj.blocked = 0
     return obj
+  def block (self):
+    self.blocked += 1
+    return self
+  def unblock (self):
+    self.blocked -= self.blocked > 0
+    return self
