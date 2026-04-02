@@ -10,7 +10,7 @@ class LOGFILE:
   indent: int
   blocked: int
   def __new__ (cls, file, start=..., /):
-    if file is None: pass
+    if file is None: return STDOUT
     elif isinstance(file, TextIOWrapper) and file.writable():
       if file in LOGFILE.__logfile_instances:
         return LOGFILE.__logfile_instances[file]
@@ -38,4 +38,8 @@ class LOGFILE:
     self.times.pop()
     self.indent -= 1
     return self
+
+STDOUT = object.__new__(LOGFILE)
+STDOUT.file, STDOUT.times = None, [ PROGRAM_START ]
+STDOUT.indent = STDOUT.blocked = 0
 LOGFILE.__logfile_instances = {}
