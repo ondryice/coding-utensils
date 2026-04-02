@@ -24,3 +24,13 @@ class LOGFILE:
   def unblock (self):
     self.blocked -= self.blocked > 0
     return self
+  def enter (self, instant=...):
+    self.times.append(_inst(instant))
+    self.indent += 1
+    return self
+  def escape (self):
+    if not self.indent:
+      raise RuntimeError("cannot escape section - output already at zero-level indent")
+    self.times.pop()
+    self.indent -= 1
+    return self
