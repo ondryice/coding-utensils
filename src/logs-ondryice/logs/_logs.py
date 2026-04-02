@@ -5,5 +5,6 @@ class LOGBASE:
 
   @classmethod
   def push (cls, *values, sep=' ', end='\n', flush=False):
-    cls.output.write(*values, sep=sep, end=end, flush=flush)
+    if not cls.output.blocked:
+      cls.output.write(*values, sep=sep, end=end, flush=flush).block()
     return cls
