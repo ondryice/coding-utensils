@@ -25,8 +25,8 @@ class LOGFILE:
   def lock (self):
     self.locked += 1
     return self
-  def unlock (self):
-    self.locked -= self.locked > 0
+  def unlock (self, proceed=True):
+    self.locked -= proceed and self.locked > 0
     return self
   def enter (self, instant=...):
     if self.locked:
