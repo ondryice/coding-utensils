@@ -4,19 +4,23 @@ from io import TextIOWrapper
 from logs._misc import instant as _inst, PROGRAM_START
 
 class LOGFILE:
+  __logfile_instances: dict[TextIOWrapper,LOGFILE]
   file: None|TextIOWrapper
   times: list[datetime]
   indent: int
   blocked: int
   def __new__ (cls, file, start=..., /):
     if file is None: pass
-    elif isinstance(file, TextIOWrapper) and file.writable(): pass
+    elif isinstance(file, TextIOWrapper) and file.writable():
+      if file in LOGFILE.__logfile_instances:
+        return LOGFILE.__logfile_instances[file]
     else: raise ValueError(f"invalid file {file!r} - must be None for stdout or writable instance of io.TextIOWrapper")
     start = PROGRAM_START if start is ... else _inst(start)
     obj = super().__new__(LOGFILE)
     obj.file = file
     obj.times = [ start ]
     obj.indent = obj.blocked = 0
+    LOGFILE.__logfile_instances[file] = obj
     return obj
   def block (self):
     self.blocked += 1
@@ -34,3 +38,4 @@ class LOGFILE:
     self.times.pop()
     self.indent -= 1
     return self
+LOGFILE.__logfile_instances = {}
