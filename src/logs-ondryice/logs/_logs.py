@@ -65,3 +65,11 @@ class log:
           if lc.forwarding and lc.super():
             __note(lc.super())
     __note(cls); return cls
+  @classmethod
+  def start (cls, header, instant=..., timestamp=True, runtime=False, flush=False):
+    instant = _inst(instant)
+    return cls.note(header, instant, timestamp, runtime, flush).enter(instant)
+  @classmethod
+  def finish (cls, message='Done.', instant=..., timestamp=True, runtime=True, flush=False):
+    instant = _inst(instant)
+    return cls.note(message, instant, timestamp, runtime, flush).escape()
