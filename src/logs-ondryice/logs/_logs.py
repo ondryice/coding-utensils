@@ -41,7 +41,7 @@ class log:
     return cls
   @classmethod
   def escape (cls):
-    if not (STDOUT.indent and cls.output.indent):
+    if not cls.output.indent:
       raise RuntimeError(f"cannot decrease {cls.__name__} indent - would result in negative indentation")
     with STDOUT.escapeandlock():
       with cls.output.escapeandlock():
@@ -59,8 +59,9 @@ class log:
   @classmethod
   def note (cls, message, instant=..., timestamp=True, runtime=False, flush=False):
     args = str(message), _inst(instant), bool(timestamp), bool(runtime), bool(flush)
-    with STDOUT.noteandlockif(not cls.muted, *args):
-      with cls.output.noteandlockif(not cls.blocked, *args):
-        if cls.forwarding and cls.super():
-          cls.super().note(*args)
-    return cls
+    def __note (lc: type[log]):
+      with STDOUT.noteandlockif(not lc.muted, *args):
+        with lc.output.noteandlockif(not lc.blocked, *args):
+          if lc.forwarding and lc.super():
+            __note(lc.super())
+    __note(cls); return cls
