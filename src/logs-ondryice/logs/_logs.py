@@ -1,4 +1,7 @@
-from logs._errors import NegativeLogIndentError
+from contextlib import contextmanager
+from datetime import datetime
+
+from logs._errors import LogSectionExit, LoggingError, NegativeLogIndentError
 from logs._files import STDOUT
 from logs._misc import instant as _inst
 
@@ -6,6 +9,7 @@ class log:
   output = STDOUT
   forwarding = False
   muted = blocked = 0
+  sectionindent = None
 
   @classmethod
   def super (cls) -> None|type[log]:
@@ -84,3 +88,32 @@ class log:
   def finish (cls, message='Done.', instant=..., timestamp=True, runtime=True, flush=False):
     instant = _inst(instant)
     return cls.note(message, instant, timestamp, runtime, flush).escape()
+
+  @contextmanager
+  @classmethod
+  def section (cls, header, instant=..., timestamp=True, runtime=False, flush=False):
+    instant = _inst(instant)
+    prev = cls.sectionindent
+    cls.start(header, instant, timestamp, runtime, flush)
+    cls.sectionindent = cls.output.indent
+    try:
+      yield
+      cls.exit(instant=datetime.now())
+    except LogSectionExit as exit:
+      cls.__escapemany(cls.output.indent - cls.sectionindent)
+      cls.note(*exit.note)
+      cls.__escapemany(1)
+    except Exception as error:
+      instant = datetime.now().astimezone()
+      if cls.output.indent > cls.sectionindent:
+        cls.note(f"!!! Caught unhandled {type(error).__name__} !!!", runtime=True)
+        cls.__escapemany(cls.output.indent - cls.sectionindent)
+      cls.note(f"!!! Aborted section - caught unhandled {type(error).__name__}:")
+      cls.push(error, flush=True)
+    finally: cls.sectionindent = prev
+  @classmethod
+  def exit (cls, message="Finished section.", instant=..., timestamp=True, runtime=True, flush=True):
+    instant = _inst(instant)
+    if cls.sectionindent is None:
+      raise LoggingError(cls, f"cannot exit {cls.__name__} section - {cls.__name__} is not in a section")
+    raise LogSectionExit(cls, str(message), _inst(instant), bool(timestamp), bool(runtime), bool(flush))

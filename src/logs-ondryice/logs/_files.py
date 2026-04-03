@@ -51,11 +51,12 @@ class LOGFILE:
     self.indent -= 1
     return self
   @contextmanager
-  def escapeandlock (self):
+  def escapeandlock (self, num=1):
     if not self.locked:
-      i = self.times[-1]
-      try: yield self.escape().lock()
-      except: self.times.append(i); self.indent += 1
+      prev = self.times[-num:]
+      self.times, self.indent = self.times[:-num], self.indent - num
+      try: yield self.lock()
+      except: self.times.extend(prev); self.indent += num
       finally: self.unlock()
     else:
       yield self
