@@ -1,3 +1,4 @@
+from logs._errors import NegativeLogIndentError
 from logs._files import STDOUT
 from logs._misc import instant as _inst
 
@@ -41,12 +42,17 @@ class log:
     return cls
   @classmethod
   def escape (cls):
-    if not cls.output.indent:
-      raise RuntimeError(f"cannot decrease {cls.__name__} indent - would result in negative indentation")
-    with STDOUT.escapeandlock():
-      with cls.output.escapeandlock():
+    return cls.__escapemany(1)
+  @classmethod
+  def __escapemany (cls, num):
+    if num < 1:
+      return cls
+    if cls.output.indent < num:
+      raise NegativeLogIndentError(cls)
+    with STDOUT.escapeandlock(num):
+      with cls.output.escapeandlock(num):
         if cls.super():
-          cls.super().escape()
+          cls.super().__escapemany(num)
     return cls
 
   @classmethod
