@@ -57,6 +57,11 @@ class log:
           cls.super().push(*values, sep=sep, end=end, flush=flush)
     return cls
   @classmethod
+  def space (cls, lines=1, flush=False):
+    if lines < 1:
+      return cls
+    return cls.push('\n'*lines, end='', flush=flush)
+  @classmethod
   def note (cls, message, instant=..., timestamp=True, runtime=False, flush=False):
     args = str(message), _inst(instant), bool(timestamp), bool(runtime), bool(flush)
     def __note (lc: type[log]):
