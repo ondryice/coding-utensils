@@ -35,6 +35,13 @@ class LOGFILE:
     self.times.append(_inst(instant))
     self.indent += 1
     return self
+  @contextmanager
+  def enterandlock (self, instant: datetime):
+    if not self.locked:
+      yield self.enter(instant).lock()
+      self.unlock()
+    else:
+      yield self
   def escape (self):
     if self.locked:
       return self
@@ -43,6 +50,15 @@ class LOGFILE:
     self.times.pop()
     self.indent -= 1
     return self
+  @contextmanager
+  def escapeandlock (self):
+    if not self.locked:
+      i = self.times[-1]
+      try: yield self.escape().lock()
+      except: self.times.append(i); self.indent += 1
+      finally: self.unlock()
+    else:
+      yield self
 
   def push (self, *values, sep=' ', end='\n', flush=False):
     if self.locked:

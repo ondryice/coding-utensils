@@ -32,6 +32,24 @@ class log:
     return cls
 
   @classmethod
+  def enter (cls, instant=...):
+    instant = _inst(instant)
+    with STDOUT.enterandlock(instant):
+      with cls.output.enterandlock(instant):
+        if cls.super():
+          cls.super().enter(instant)
+    return cls
+  @classmethod
+  def escape (cls):
+    if not (STDOUT.indent and cls.output.indent):
+      raise RuntimeError(f"cannot decrease {cls.__name__} indent - would result in negative indentation")
+    with STDOUT.escapeandlock():
+      with cls.output.escapeandlock():
+        if cls.super():
+          cls.super().escape()
+    return cls
+
+  @classmethod
   def push (cls, *values, sep=' ', end='\n', flush=False):
     with STDOUT.pushandlockif(not cls.muted, values, sep, end, flush):
       with cls.output.pushandlockif(not cls.blocked, values, sep, end, flush):
