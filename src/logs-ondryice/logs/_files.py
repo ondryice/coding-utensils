@@ -2,7 +2,7 @@ from contextlib import contextmanager
 from datetime import datetime
 from io import TextIOWrapper
 
-from logs._misc import instant as _inst, PROGRAM_START
+from logs._misc import instant as _inst, td_string, PROGRAM_START
 
 class LOGFILE:
   __logfile_instances: dict[TextIOWrapper,LOGFILE]
@@ -56,6 +56,17 @@ class LOGFILE:
       self.unlock()
     else:
       yield self
+
+  def note (self, message, instant: datetime, timestamp=True, runtime=False, flush=False):
+    if self.locked:
+      return self
+    parts = [
+      (' '*10,f"[{instant:%H:%M:%S}]")[timestamp],
+      '  '*self.indent + '-',
+      str(message),
+      f"({td_string(instant-self.times[-1])})"
+    ][:3+runtime]
+    return self.push(*parts, flush=flush)
 
 STDOUT = object.__new__(LOGFILE)
 STDOUT.file, STDOUT.times = None, [ PROGRAM_START ]
