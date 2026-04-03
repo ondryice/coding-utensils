@@ -67,6 +67,13 @@ class LOGFILE:
       f"({td_string(instant-self.times[-1])})"
     ][:3+runtime]
     return self.push(*parts, flush=flush)
+  @contextmanager
+  def noteandlockif (self, condition: bool, message, instant, timestamp, runtime, flush):
+    if condition and not self.locked:
+      yield self.note(message, instant, timestamp, runtime, flush).lock()
+      self.unlock()
+    else:
+      yield self
 
 STDOUT = object.__new__(LOGFILE)
 STDOUT.file, STDOUT.times = None, [ PROGRAM_START ]
