@@ -44,7 +44,7 @@ class LOGFILE:
     self.indent -= 1
     return self
 
-  def write (self, *values, sep=' ', end='\n', flush=False):
+  def push (self, *values, sep=' ', end='\n', flush=False):
     if self.locked:
       return self
     print(*values, sep=sep, end=end, file=self.file, flush=flush)
@@ -52,7 +52,7 @@ class LOGFILE:
   @contextmanager
   def pushandlockif (self, condition: bool, values, sep=' ', end='\n', flush=False):
     if condition and not self.locked:
-      yield self.write(*values, sep=sep, end=end, flush=flush).lock()
+      yield self.push(*values, sep=sep, end=end, flush=flush).lock()
       self.unlock()
     else:
       yield self
