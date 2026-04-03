@@ -1,4 +1,5 @@
 from logs._files import STDOUT
+from logs._misc import instant as _inst
 
 class log:
   output = STDOUT
@@ -36,4 +37,12 @@ class log:
       with cls.output.pushandlockif(not cls.blocked, values, sep, end, flush):
         if cls.forwarding and cls.super():
           cls.super().push(*values, sep=sep, end=end, flush=flush)
+    return cls
+  @classmethod
+  def note (cls, message, instant=..., timestamp=True, runtime=False, flush=False):
+    args = str(message), _inst(instant), bool(timestamp), bool(runtime), bool(flush)
+    with STDOUT.noteandlockif(not cls.muted, *args):
+      with cls.output.noteandlockif(not cls.blocked, *args):
+        if cls.forwarding and cls.super():
+          cls.super().note(*args)
     return cls
