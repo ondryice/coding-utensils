@@ -85,8 +85,12 @@ class log:
     instant = _inst(instant)
     return cls.note(header, instant, timestamp, runtime, flush).enter(instant)
   @classmethod
-  def finish (cls, message='Done.', instant=..., timestamp=True, runtime=True, flush=False):
+  def finish (cls, message='Done.', instant=..., timestamp=True, runtime=True, flush=...):
     instant = _inst(instant)
+    if cls.output.indent == cls.sectionindent:
+      cls.exit(message, instant, timestamp, runtime, (True if flush is ... else flush))
+    elif flush is ...:
+      flush = False
     return cls.note(message, instant, timestamp, runtime, flush).escape()
 
   @contextmanager
